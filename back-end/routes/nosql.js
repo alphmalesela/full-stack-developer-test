@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { MongoClient } = require('mongodb');
-const uri = "";
+const { mongodbConn } = require('./../constants')
+const uri = mongodbConn;
 const client = new MongoClient(uri);
 const { readUniqueUsers } = require('../data');
 const { toArray } = require('gsap');

@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
-const crypto = require('crypto');
-
+require('dotenv').config()
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
 const nosqlRoutes = require('./routes/nosql');
