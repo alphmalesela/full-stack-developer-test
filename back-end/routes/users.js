@@ -1,17 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-const { getUsers, saveUniqueUsers, writeDuplicate, completeDuplicates } = require('../data');
-
-router.get('/all', async (req, res) => {
-    try {
-        const users = getUsers();
-        res.json(users).status(200)
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({ error: 'Could not fetch users' });
-    }
-})
+const { getUsers, saveUniqueUsers, readUniqueUsers, writeDuplicate, completeDuplicates, getToken } = require('../data');
+const axios = require('axios');
+const https = require('https');
 
 router.get('/uniqueUsers', async (req, res) => {
     try {
@@ -55,10 +47,53 @@ router.get('/uniqueUsers', async (req, res) => {
             writeDuplicate(user)
         });
         completeDuplicates()
-        res.json({ messsage: "Unique users and duplicates saved" })
+        res.json(uniqueUsers).status(200)
     } catch (error) {
         console.log(error)
+        res.json({ error: "Something went wrong" })
     }
 })
 
+router.post('/uniqueUsers', async (req, res) => {
+    try {
+        const token = getToken();
+        const uniqueUsers = readUniqueUsers();
+
+        for (var i = 0; i < uniqueUsers.length; i++) {
+            let user = uniqueUsers[i]
+            const data = {
+                "action": "ADDUSER",
+                "id": user.id,
+                "name": user.name,
+                "surname": user.surname,
+                "department": user.department,
+                "designation": user.designation,
+                "token": token
+            }
+
+            let retries = 0
+            while (retries < 2) {
+                try {
+                    const response = await axios.post('https://challenge.sedilink.co.za:12022', data)
+                    console.log(response)
+                } catch (error) {
+                    //Check if error is user exists; otherwise check if we should retry if we haven't already
+                    if (error.status === 505 && error.response.data === "User Already Exists") {
+                        console.error(error.response.data)
+                    } else {
+                        retries++
+                        if (retries > 1) {
+                            console.log("Failed after retrying")
+                            console.error(error.response)
+                        }
+                    }
+                }
+            }
+        }
+        res.json({ message: "Done posting unique users" })
+    } catch (error) {
+        console.log(error)
+        res.json({ error: "Something went wrong" })
+    }
+})
 module.exports = router;
