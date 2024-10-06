@@ -96,4 +96,25 @@ router.post('/uniqueUsers', async (req, res) => {
         res.json({ error: "Something went wrong" })
     }
 })
+
+router.get('/dynamicUsers', async (req, res) => {
+    try {
+        let { designation } = req.query;
+
+        let users = getUsers();
+
+        if (designation.toLowerCase() !== "all") {
+            users = users.filter(user =>
+                user.designation.toLowerCase() === designation.toLowerCase()
+            );
+        }
+
+        const response = users
+        res.json(response);
+    } catch (error) {
+        console.log(error)
+        res.json({ error: "Something went wrong" })
+    }
+})
+
 module.exports = router;
