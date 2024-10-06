@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { MongoClient } = require('mongodb');
-const uri = "mongodb+srv://seabiali:IZak88q1uRPnBMjk@cluster0.nt4rl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "";
 const client = new MongoClient(uri);
 const { readUniqueUsers } = require('../data');
 const { toArray } = require('gsap');
