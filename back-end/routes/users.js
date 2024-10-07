@@ -117,4 +117,25 @@ router.get('/dynamicUsers', async (req, res) => {
     }
 })
 
+router.get('/orderedUsers', async (req, res) => {
+    try {
+
+        let users = getUsers();
+
+        users.sort((a, b) => {
+            if (a.designation.toLowerCase() < b.designation.toLowerCase()) return -1;
+            if (a.designation.toLowerCase() > b.designation.toLowerCase()) return 1;
+            if (a.department.toLowerCase() < b.department.toLowerCase()) return -1;
+            if (a.department.toLowerCase() > b.department.toLowerCase()) return 1;
+            return 0;
+        });
+
+        const response = users
+        res.json(response);
+    } catch (error) {
+        console.log(error)
+        res.json({ error: "Something went wrong" })
+    }
+})
+
 module.exports = router;

@@ -25,9 +25,9 @@ ws.on('message', function incoming(data) {
     }
 
     if (receivedMessageReversed === stringToReverse) {
-        console.log("String reverse correctly")
+        console.log("String reversed correctly")
     } else {
-        console.log("String reverse incorrectly")
+        console.log("String reversed incorrectly")
     }
 })
 

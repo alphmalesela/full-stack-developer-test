@@ -1,6 +1,10 @@
 <template>
-    <!-- <PieChart/> -->
+  <div class="row">
+    <PieChart/>
+  </div>
+  <div class="row">
     <DynamicTable/>
+  </div>
 </template>
 
 <script setup>
