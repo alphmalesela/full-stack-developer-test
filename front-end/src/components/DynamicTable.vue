@@ -1,5 +1,10 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-pa-lg">
+    <div class="q-gutter-md">
+      <q-select v-model="model" :options="designations" label="Designation"
+        @update:model-value="selectedDesignation"
+      />
+    </div>
     <q-table
       title="Users"
       :rows="rows"
@@ -12,13 +17,20 @@
 <script>
 import { ref } from 'vue'
 
+let rows = ref([])
+let designations = ref([])
+
 const getUsers = (designation="all") => {
   return fetch(`http://localhost:3000/users/dynamicUsers?designation=${designation}`).then((response) =>
         response.json()
     );
 }
 
-let rows = ref([])
+const selectedDesignation = async (value)=> {
+  const data = await getUsers(value)
+  rows.value = data.users
+  designations.value = data.designations
+}
 
 const columns = [
   { name: 'name', align: 'center', label: 'Name', field: 'name', sortable: true },
@@ -33,13 +45,16 @@ export default {
     return {
       columns,
       rows,
+      model: ref(null),
+      selectedDesignation,
+      designations
     }
   },
 
   async mounted() {
     const data = await getUsers()
-    rows.value = data
-    console.log(data)
+    rows.value = data.users
+    designations.value = data.designations
   }
 
 }

@@ -103,13 +103,18 @@ router.get('/dynamicUsers', async (req, res) => {
 
         let users = getUsers();
 
+        const uniqueDesignations = [...new Set(users.map(user => user.designation))];
+
         if (designation.toLowerCase() !== "all") {
             users = users.filter(user =>
                 user.designation.toLowerCase() === designation.toLowerCase()
             );
         }
 
-        const response = users
+        const response = {
+            users: users,
+            designations: uniqueDesignations
+        }
         res.json(response);
     } catch (error) {
         console.log(error)
